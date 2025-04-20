@@ -15,6 +15,10 @@ export default function RootLayout() {
   const colorScheme = useColorScheme();
   const [loaded] = useFonts({
     SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
+    Poppins: require('../assets/fonts/Poppins-Regular.ttf'),
+    PoppinsThin: require('../assets/fonts/Poppins-Thin.ttf'),
+    PoppinsBold: require('../assets/fonts/Poppins-Bold.ttf'),
+    Milkyway: require('../assets/fonts/Milkyway.ttf'),
   });
 
   useEffect(() => {

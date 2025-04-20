@@ -1,7 +1,6 @@
 import { Tabs } from 'expo-router';
 import React from 'react';
-import { Platform } from 'react-native';
-
+import { Platform, Image } from 'react-native';
 import { HapticTab } from '@/components/HapticTab';
 import { IconSymbol } from '@/components/ui/IconSymbol';
 import TabBarBackground from '@/components/ui/TabBarBackground';
@@ -14,30 +13,66 @@ export default function TabLayout() {
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
+        tabBarActiveTintColor: 'black',
+        tabBarInactiveTintColor: 'grey', 
         headerShown: false,
         tabBarButton: HapticTab,
-        tabBarBackground: TabBarBackground,
         tabBarStyle: Platform.select({
           ios: {
             // Use a transparent background on iOS to show the blur effect
+            backgroundColor: '#d1cfcf',
             position: 'absolute',
           },
-          default: {},
+          default: {
+          backgroundColor: '#d1cfcf',
+          position: 'absolute',
+          borderTopColor: 'transparent'
+          },
         }),
       }}>
       <Tabs.Screen
-        name="index"
+        name="home"
         options={{
           title: 'Home',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
+          tabBarIcon: ({ color, focused }) =>       
+          <Image source={require('../../assets/images/home.png')}
+          style={{
+            width: 50,
+            height: 50,
+            tintColor: focused ? 'black' : 'grey', 
+          }}
+        />,
+          tabBarLabel: () => null,
         }}
       />
       <Tabs.Screen
-        name="explore"
+        name="search"
         options={{
-          title: 'Explore',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
+          title: 'Search',
+          tabBarIcon: ({ color, focused }) =>       
+            <Image source={require('../../assets/images/search.png')}
+            style={{
+              width: 30,
+              height: 30,
+              tintColor: focused ? 'black' : 'grey', 
+            }}
+          />,
+          tabBarLabel: () => null,
+        }}
+      />
+      <Tabs.Screen
+        name="profile"
+        options={{
+          title:'Profile',
+          tabBarIcon: ({ color, focused }) =>       
+            <Image source={require('../../assets/images/account.png')}
+            style={{
+              width: 32,
+              height: 32,
+              tintColor: focused ? 'black' : 'grey', 
+            }}
+          />,
+          tabBarLabel: () => null,
         }}
       />
     </Tabs>
