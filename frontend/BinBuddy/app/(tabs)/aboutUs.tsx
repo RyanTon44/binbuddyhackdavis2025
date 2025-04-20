@@ -15,7 +15,7 @@ export default function aboutUs() {
           <Text style={{ fontFamily:'PoppinsBold', color: '#e8e6e6', fontSize: 20, 
         position: 'absolute', marginRight: 50, marginLeft: 50, marginTop: 375, textAlign: 'center' }}>BinBuddy is an app to help people properly dispose of trash utilizing AI!
         We believe that preserving our planet is extremely important, and want to ensure everyone can play their part in this mission. {'\n'} {'\n'}
-        You can ask BinBuddy any question about trash disposal, and he'll give you an environmentally friendly response!</Text>
+        You can ask BinBuddy any question about where trash goes, and he'll give you an environmentally friendly response!</Text>
     </View>
   );
 }
