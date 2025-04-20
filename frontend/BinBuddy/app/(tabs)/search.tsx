@@ -1,4 +1,5 @@
 import React, {useState} from 'react';
+import axios from 'axios';
 import { View, Text, TextInput, StyleSheet, Pressable, ImageBackground  } from 'react-native';
 
 const styles = StyleSheet.create({
@@ -39,9 +40,28 @@ const styles = StyleSheet.create({
 
 export default function Search() {
     const [text, setText] = useState('');
-    const handleConfirm = () => {
-        console.log(text); //THIS IS WHERE THE INPUT IS PUT???
-      };
+    const handleConfirm = async () => {
+      if (!text.trim()) return;
+    
+      try {
+        const response = await axios.post("http://localhost:3000/api/classify", {
+          item: text.trim(),
+        });
+    
+        const data = response.data;
+        let resultMessage = `Bin: ${data.bin}\nReason: ${data.reason}`;
+        if (data.note) {
+          resultMessage += `\nNote: ${data.note}`;
+        }
+    
+        alert(resultMessage); // You can replace this with a nicer display later
+    
+      } catch (error) {
+        console.error("Error classifying item:", error.message);
+        alert("Something went wrong. Please try again.");
+      }
+    };
+    
   return (
     <ImageBackground
         source={require('../../assets/images/searchbackground.png')}
