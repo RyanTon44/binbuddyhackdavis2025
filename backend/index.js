@@ -8,7 +8,8 @@ const PORT = process.env.PORT || 3000;
 app.use(express.json());
 
 const API_KEY = process.env.GEMINI_API_KEY;
-const GEMINI_API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent";
+const GEMINI_API_URL =
+  "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent";
 
 app.post("/api/classify", async (req, res) => {
   const { item } = req.body;
@@ -18,6 +19,14 @@ app.post("/api/classify", async (req, res) => {
   }
 
   try {
+    const prompt = `Decide which bin this item belongs in: trash, recycle, or compost.
+
+Item: "${item}"
+
+Respond in this exact format:
+Bin: [bin name]
+Reason: [short explanation why it belongs in that bin]`;
+
     const response = await axios.post(
       `${GEMINI_API_URL}?key=${API_KEY}`,
       {
@@ -25,7 +34,7 @@ app.post("/api/classify", async (req, res) => {
           {
             parts: [
               {
-                text: `Classify this item into 'trash', 'recycle', or 'compost':\n"${item}"\nRespond with just one word.`,
+                text: prompt,
               },
             ],
           },
@@ -39,7 +48,16 @@ app.post("/api/classify", async (req, res) => {
     );
 
     const aiText = response.data.candidates?.[0]?.content?.parts?.[0]?.text?.trim();
-    res.json({ result: aiText || "Unknown" });
+
+    if (!aiText || !aiText.includes("Bin:")) {
+      return res.status(500).json({ error: "Unexpected AI response." });
+    }
+
+    const [binLine, reasonLine] = aiText.split("\n");
+    const bin = binLine?.replace("Bin:", "").trim();
+    const reason = reasonLine?.replace("Reason:", "").trim();
+
+    res.json({ bin, reason });
   } catch (err) {
     console.error("Gemini API error:", err.response?.data || err.message);
     res.status(500).json({ error: "Something went wrong with Gemini API." });
