@@ -19,9 +19,10 @@ export default function TabLayout() {
         tabBarButton: HapticTab,
         tabBarStyle: Platform.select({
           ios: {
-            // Use a transparent background on iOS to show the blur effect
+            borderTopColor: 'transparent',
             backgroundColor: '#d1cfcf',
             position: 'absolute',
+            height: 65,
           },
           default: {
           backgroundColor: '#d1cfcf',
@@ -31,12 +32,13 @@ export default function TabLayout() {
         }),
       }}>
       <Tabs.Screen
-        name="home"
+        name="index"
         options={{
-          title: 'Home',
+          title: 'index',
           tabBarIcon: ({ color, focused }) =>       
           <Image source={require('../../assets/images/home.png')}
           style={{
+            marginTop: 15,
             width: 50,
             height: 50,
             tintColor: focused ? 'black' : 'grey', 
@@ -52,6 +54,7 @@ export default function TabLayout() {
           tabBarIcon: ({ color, focused }) =>       
             <Image source={require('../../assets/images/search.png')}
             style={{
+              marginTop: 15,
               width: 30,
               height: 30,
               tintColor: focused ? 'black' : 'grey', 
@@ -61,14 +64,15 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="profile"
+        name="aboutUs"
         options={{
-          title:'Profile',
+          title:'aboutUs',
           tabBarIcon: ({ color, focused }) =>       
-            <Image source={require('../../assets/images/account.png')}
+            <Image source={require('../../assets/images/aboutUs.png')}
             style={{
-              width: 32,
-              height: 32,
+              marginTop: 15,
+              width: 35,
+              height: 35,
               tintColor: focused ? 'black' : 'grey', 
             }}
           />,
