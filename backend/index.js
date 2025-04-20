@@ -1,3 +1,9 @@
+//BinBuddy HackDavis 25' 
+//Creators: Adam Kim, Benjamin Brundage, Ryan Ton
+
+// BinBuddy HackDavis 25
+// Creators: Adam Kim, Benjamin Brundage, Ryan Ton
+
 const express = require("express");
 const axios = require("axios");
 require("dotenv").config();
@@ -11,6 +17,7 @@ const API_KEY = process.env.GEMINI_API_KEY;
 const GEMINI_API_URL =
   "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent";
 
+// Classify disposable items into bin types
 app.post("/api/classify", async (req, res) => {
   const { item } = req.body;
 
@@ -66,7 +73,12 @@ Note: Please take this item to your local hazardous waste disposal program.`;
       return res.status(500).json({ error: "Unexpected bin type from AI." });
     }
 
-    res.json({ bin, reason, note: note || null });
+    const responseBody = { bin, reason };
+    if (note) {
+      responseBody.note = note;
+    }
+
+    res.json(responseBody);
   } catch (err) {
     console.error("Gemini API error:", err.response?.data || err.message);
     res.status(500).json({ error: "Something went wrong with Gemini API." });
