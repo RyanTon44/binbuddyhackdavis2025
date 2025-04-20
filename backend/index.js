@@ -19,13 +19,16 @@ app.post("/api/classify", async (req, res) => {
   }
 
   try {
-    const prompt = `Decide which bin this item belongs in: trash, recycle, or compost.
+    const prompt = `Decide which bin this item belongs in: trash, recycle, compost, or hazardous waste.
 
 Item: "${item}"
 
 Respond in this exact format:
 Bin: [bin name]
-Reason: [short explanation why it belongs in that bin]`;
+Reason: [short explanation why it belongs in that bin]
+
+If the bin is 'hazardous waste', also include this message:
+Note: Please take this item to your local hazardous waste disposal program.`;
 
     const response = await axios.post(
       `${GEMINI_API_URL}?key=${API_KEY}`,
@@ -53,11 +56,17 @@ Reason: [short explanation why it belongs in that bin]`;
       return res.status(500).json({ error: "Unexpected AI response." });
     }
 
-    const [binLine, reasonLine] = aiText.split("\n");
-    const bin = binLine?.replace("Bin:", "").trim();
-    const reason = reasonLine?.replace("Reason:", "").trim();
+    const lines = aiText.split("\n");
+    const bin = lines.find((line) => line.startsWith("Bin:"))?.replace("Bin:", "").trim();
+    const reason = lines.find((line) => line.startsWith("Reason:"))?.replace("Reason:", "").trim();
+    const note = lines.find((line) => line.startsWith("Note:"))?.replace("Note:", "").trim();
 
-    res.json({ bin, reason });
+    const validBins = ["trash", "recycle", "compost", "hazardous waste"];
+    if (!validBins.includes(bin?.toLowerCase())) {
+      return res.status(500).json({ error: "Unexpected bin type from AI." });
+    }
+
+    res.json({ bin, reason, note: note || null });
   } catch (err) {
     console.error("Gemini API error:", err.response?.data || err.message);
     res.status(500).json({ error: "Something went wrong with Gemini API." });
